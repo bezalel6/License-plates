@@ -3,7 +3,7 @@ export type RecCall = {
   operatingOn: number;
   newArr: number[];
   newArrIndex: number;
-  operation: "leaf" | "plus" | "minus";
+  operation: "leaf" | "plus" | "minus" | "multiply" | "divide";
 };
 
 export class ListNode {
@@ -29,22 +29,34 @@ export class ListNode {
     const ret: any = [];
     while (tN != null && !found0 && tN.next) {
       let calc = "";
+      let operationSign = "";
       let newArr: number[] = [];
       if (tN.data.newArr) newArr = [...tN.data.newArr];
       const newArrIndex = tN.data.newArrIndex ? tN.data.newArrIndex : 0;
       if (tN.data.operation === "leaf" && tN.data.num === 0) found0 = true;
       let calcRes = +tN.data.num;
-      if (tN.data.operation === "plus") calcRes += +tN.data.operatingOn;
-      else if (tN.data.operation === "minus") calcRes -= +tN.data.operatingOn;
-      calc +=
-        tN.data.num +
-        (tN.data.operation === "plus"
-          ? "+"
-          : tN.data.operation === "leaf"
-          ? "#"
-          : tN.data.operatingOn < 0
-          ? ""
-          : "-");
+      switch (tN.data.operation) {
+        case "plus":
+          calcRes += +tN.data.operatingOn;
+          // if (tN.data.operatingOn < 0) operationSign = "";
+          // else
+          operationSign = "+";
+          break;
+        case "minus":
+          calcRes -= +tN.data.operatingOn;
+          operationSign = "-";
+          break;
+        case "leaf":
+          operationSign = "#";
+          break;
+        case "multiply":
+          operationSign = "*";
+          break;
+        case "divide":
+          operationSign = "/";
+          break;
+      }
+      calc += operationSign;
       const tArr: number[] = [...newArr];
       let a = newArr.splice(0, newArrIndex) + ",";
       newArr = tArr;
@@ -53,16 +65,8 @@ export class ListNode {
       a = a === "," ? "" : a;
       b = b === "," ? "" : b;
       const currentCalc =
-        "[" + a + calc + tN.data.operatingOn + "=" + calcRes + b + "]";
+        "  " + a + calc + tN.data.operatingOn + "=" + calcRes + b + "  ";
       ret.push(currentCalc);
-      // console.log(
-      //   "[" + a + calc + tN.data.operatingOn + "=" + calcRes + b + "]"
-      // );
-      // console.log(
-      //   "%cLinkedList.ts line:25 tN.data.newArr",
-      //   "color: #007acc;",
-      //   tN.data.newArr
-      // );
       tN = tN.next;
     }
     return ret;
