@@ -1,39 +1,51 @@
-import React, { useState } from "react";
-import { useForm } from "react-hook-form";
-import { ListNode } from "./LinkedList";
+import { useState } from "react";
+import { Button, Form } from "semantic-ui-react";
+import { useForm } from "./hooks";
 import { calcLicensePlate } from "./logic";
 
 export default function App() {
-  const {
-    register,
-    handleSubmit,
-    watch,
-    formState: { errors },
-  } = useForm();
-  const [calc, setCalc] = useState([]);
-  const onSubmit = (data: any) => {
-    const result: false | ListNode = calcLicensePlate(data.num);
-    if (result !== false) {
-      const items: any = [];
-      result.printTree().forEach((item) => {
+  const [calc, setCalc] = useState<any>(false);
+  const { values, onChange, onSubmit } = useForm(callback, {});
+  function callback() {
+    const items: any[] = [];
+    console.log("%cApp.tsx line:10 values", "color: #007acc;", values);
+    const list = calcLicensePlate((values as any).body as string);
+    if (list) {
+      list.printTree().forEach((item) => {
         items.push(<li key={item}>{item}</li>);
       });
-      setCalc(items);
     }
-  };
 
-  console.log(watch("example")); // watch input value by passing the name of it
-
+    setCalc(<ul className="list">{items}</ul>);
+  }
   return (
-    /* "handleSubmit" will validate your inputs before invoking "onSubmit" */
-    <form onSubmit={handleSubmit(onSubmit)}>
-      {/* register your input into the hook by invoking the "register" function */}
-      {/* include validation with required or other standard HTML validation rules */}
-      <input {...register("num", { required: true })} />
-      {/* errors will return when field validation fails  */}
-      {errors.exampleRequired && <span>This field is required</span>}
-      <ul>{calc}</ul>
-      <input type="submit" />
-    </form>
+    <div className="form-container">
+      <Form onSubmit={onSubmit} noValidate>
+        <Form.Field>
+          <Form.Input
+            placeholder="hi world!"
+            name="body"
+            onChange={onChange}
+
+            // error={error ? true : false}
+          />
+          <Button type="submit" color="teal">
+            Submit
+          </Button>
+        </Form.Field>
+      </Form>
+      {calc && (
+        <div style={{ marginBottom: 20 }}>
+          {calc}
+          {/* {
+            <ul>
+              {calc.forEach((element: {} | null | undefined) => {
+                <li>{element}</li>;
+              })}
+            </ul>
+          } */}
+        </div>
+      )}
+    </div>
   );
 }
