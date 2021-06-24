@@ -2,6 +2,8 @@ import { useState } from "react";
 import { Button, Form, Checkbox } from "semantic-ui-react";
 import { useForm } from "./hooks";
 import { calcLicensePlate } from "./logic";
+import MyFooter from "./MyFooter";
+import DarkModeButton from "./DarkModeButton";
 
 export default function App() {
   const [calc, setCalc] = useState<any>(false);
@@ -38,6 +40,8 @@ export default function App() {
   }
   return (
     <>
+      <DarkModeButton />
+
       <div
         className="form-container"
         style={{ display: "flex", justifyContent: "center" }}
@@ -50,14 +54,19 @@ export default function App() {
       >
         <Form onSubmit={onSubmit} noValidate>
           <Form.Field>
-            <Form.Input
-              placeholder="הכנס את מספר הרכב"
-              name="body"
-              onChange={onChange}
-            />
-            <Button type="submit" color="teal">
-              Submit
-            </Button>
+            <div
+              className="form-container"
+              style={{ display: "flex", justifyContent: "center" }}
+            >
+              <Form.Input
+                placeholder="הכנס את מספר לוחית הרישוי"
+                name="body"
+                onChange={onChange}
+              />
+              <Button type="submit" color="teal">
+                Submit
+              </Button>
+            </div>
           </Form.Field>
         </Form>
         {calc && <div style={{ marginBottom: 20 }}>{calc}</div>}
@@ -69,6 +78,7 @@ export default function App() {
         {/* <p>אפשרויות</p>
         <Checkbox label='' /> */}
       </div>
+      <MyFooter></MyFooter>
     </>
   );
 }

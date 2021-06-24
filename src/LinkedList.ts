@@ -38,13 +38,13 @@ export class ListNode {
       switch (tN.data.operation) {
         case "plus":
           calcRes += +tN.data.operatingOn;
-          // if (tN.data.operatingOn < 0) operationSign = "";
-          // else
-          operationSign = "+";
+          if (tN.data.operatingOn < 0) operationSign = "";
+          else operationSign = "+";
           break;
         case "minus":
           calcRes -= +tN.data.operatingOn;
-          operationSign = "-";
+          if (tN.data.operatingOn < 0) operationSign = "";
+          else operationSign = "-";
           break;
         case "leaf":
           operationSign = "#";
@@ -56,7 +56,7 @@ export class ListNode {
           operationSign = "/";
           break;
       }
-      calc += operationSign;
+      calc += tN.data.num + operationSign;
       const tArr: number[] = [...newArr];
       let a = newArr.splice(0, newArrIndex) + ",";
       newArr = tArr;
