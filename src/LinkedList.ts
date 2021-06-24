@@ -33,12 +33,17 @@ export class ListNode {
       if (tN.data.newArr) newArr = [...tN.data.newArr];
       const newArrIndex = tN.data.newArrIndex ? tN.data.newArrIndex : 0;
       if (tN.data.operation === "leaf" && tN.data.num === 0) found0 = true;
+      let calcRes = +tN.data.num;
+      if (tN.data.operation === "plus") calcRes += +tN.data.operatingOn;
+      else if (tN.data.operation === "minus") calcRes -= +tN.data.operatingOn;
       calc +=
         tN.data.num +
         (tN.data.operation === "plus"
           ? "+"
           : tN.data.operation === "leaf"
           ? "#"
+          : tN.data.operatingOn < 0
+          ? ""
           : "-");
       const tArr: number[] = [...newArr];
       let a = newArr.splice(0, newArrIndex) + ",";
@@ -47,9 +52,6 @@ export class ListNode {
       newArr = tArr;
       a = a === "," ? "" : a;
       b = b === "," ? "" : b;
-      let calcRes = +tN.data.num;
-      if (tN.data.operation === "plus") calcRes += +tN.data.operatingOn;
-      else if (tN.data.operation === "minus") calcRes -= +tN.data.operatingOn;
       const currentCalc =
         "[" + a + calc + tN.data.operatingOn + "=" + calcRes + b + "]";
       ret.push(currentCalc);
