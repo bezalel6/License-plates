@@ -1,16 +1,20 @@
 export type RecCall = {
   num: number;
   operatingOn: number;
-  newArr?: number[];
-  newArrIndex?: number;
+  newArr: number[];
+  newArrIndex: number;
   operation: "leaf" | "plus" | "minus";
 };
 
 export class ListNode {
   data: RecCall;
-  next: ListNode;
-  prev: ListNode;
-  constructor(data: RecCall, next: ListNode = null, prev: ListNode = null) {
+  next: ListNode | null;
+  prev: ListNode | null;
+  constructor(
+    data: RecCall,
+    next: ListNode | null = null,
+    prev: ListNode | null = null
+  ) {
     this.data = data;
     this.next = next;
     this.prev = prev;
@@ -18,13 +22,16 @@ export class ListNode {
       data.newArr = [...data.newArr];
     }
   }
-  printTree() {
+
+  printTree(): [] {
     let tN: ListNode = this;
     let found0: boolean = false;
-    while (tN != null && !found0) {
+    const ret: any = [];
+    while (tN != null && !found0 && tN.next) {
       let calc = "";
-      const newArr = [...tN.data.newArr];
-      const newArrIndex = tN.data.newArrIndex;
+      let newArr: number[] = [];
+      if (tN.data.newArr) newArr = [...tN.data.newArr];
+      const newArrIndex = tN.data.newArrIndex ? tN.data.newArrIndex : 0;
       if (tN.data.operation === "leaf" && tN.data.num === 0) found0 = true;
       calc +=
         tN.data.num +
@@ -33,27 +40,36 @@ export class ListNode {
           : tN.data.operation === "leaf"
           ? "#"
           : "-");
+      const tArr: number[] = [...newArr];
       let a = newArr.splice(0, newArrIndex) + ",";
+      newArr = tArr;
       let b = "," + newArr.splice(newArrIndex + 1, newArr.length);
+      newArr = tArr;
       a = a === "," ? "" : a;
       b = b === "," ? "" : b;
-      const calcRes = newArr[newArrIndex];
-      // newArr[newArrIndex] === undefined
-      //   ? newArr[newArrIndex - 1] === tN.data.operatingOn + tN.data.num
-      //     ? newArr[newArrIndex - 1]
-      //     : newArr[newArrIndex + 1]
-      //   : newArr[newArrIndex];
-      console.log(
-        "[" + a + calc + tN.data.operatingOn + "=" + calcRes + b + "]"
-      );
+      let calcRes = +tN.data.num;
+      if (tN.data.operation === "plus") calcRes += +tN.data.operatingOn;
+      else if (tN.data.operation === "minus") calcRes -= +tN.data.operatingOn;
+      const currentCalc =
+        "[" + a + calc + tN.data.operatingOn + "=" + calcRes + b + "]";
+      ret.push(currentCalc);
+      // console.log(
+      //   "[" + a + calc + tN.data.operatingOn + "=" + calcRes + b + "]"
+      // );
+      // console.log(
+      //   "%cLinkedList.ts line:25 tN.data.newArr",
+      //   "color: #007acc;",
+      //   tN.data.newArr
+      // );
       tN = tN.next;
     }
+    return ret;
   }
 }
 export class LinkedList {
-  private _head: ListNode;
+  private _head: ListNode | null;
   length: number;
-  constructor(head) {
+  constructor(head: ListNode) {
     this._head = head;
     this.length = 1;
   }
