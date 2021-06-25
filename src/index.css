@@ -41,7 +41,9 @@ body {
 }
 
 h1,
-p {
+p,
+li,
+ul {
   color: var(--text-color);
 }
 
